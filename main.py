@@ -9,10 +9,13 @@ import random
     # (DONE) Fix cases where people enter settings that would otherwise throw off the file read (more digits than anticipated)
     # (DONE) It's currently broken, have to redo the reading of the settings file due to rearrangement and moving of git repo link to separate file
     # (DONE) Figure out why it isn't checking save file date before committing and fix that
-    # Make this into .exe file
-    # Make readme
+
+    # Make this into .exe file (?)
+    # Make readme - note it may only work with whatever OS .exe file was made in, note must have python installed, note deleting private repo wil get rid of commits done through it.
     # Figure out how to put this in startup folder of windows so it runs whenever computer is on
+        # Issues with relative paths (especially since folders and files would be created in the startup folder). Would I need to use absolute paths & then have specific install directions / an installer to make sure everything is squared away if I were to send this to someone else to use?
     # Make it work with double digit commit max/min
+    # Add time of check when check ins are made
     
 
 
@@ -225,7 +228,7 @@ def check_exclude_days(excluded_days):
     print("Comparing today weekday to excluded days list...")
 
     if today_weekday in excluded_days_list:
-        print(f"Today is an excluded day, checking in again in {interval} seconds...")
+        print(f"Today is an excluded day, checking in again in {(interval / 60) / 60} hours...")
         time.sleep(interval)
         startup_mode_selector()
     else:
