@@ -28,10 +28,11 @@ import random
 
 
 # FILE PATHS
-settings_file_path = "./settings_file.txt"
-save_file_path = "./save_file.txt"
-git_repo_link_file_path = "./git_repo_link_file.txt"
-excluded_days_file_path = "./excluded_days_file.txt"
+settings_file_path = "./git-real-green-folder/settings_file.txt"
+save_file_path = "./git-real-green-folder/save_file.txt"
+git_repo_link_file_path = "./git-real-green-folder/git_repo_link_file.txt"
+excluded_days_file_path = "./git-real-green-folder/excluded_days_file.txt"
+commit_js_file_path = "./git-real-green-folder/git-repo-for-commits/main.js"
 
 
 now = datetime.now() # Current date and time
@@ -52,6 +53,7 @@ def startup_mode_selector():
 def first_time_startup():
     is_save_file_exist = os.path.isfile(save_file_path)
     if is_save_file_exist == False:
+        subprocess.run("mkdir git-real-green-folder", shell=True, check=True)
         save_file_creator = open(save_file_path, "a+")
         save_file_creator.close()
 
@@ -127,20 +129,20 @@ def first_time_startup():
     print("\n...\n...\n...\n")
 
     print("Making folder for Git repo...")
-    subprocess.run("mkdir git-repo-for-commits", shell=True, check=True)
+    subprocess.run("cd git-real-green-folder && mkdir git-repo-for-commits", shell=True, check=True)
     
     print("Trying Linux/MacOS command to make file in repo folder...")
 
     try:
-        subprocess.run("touch git-repo-for-commits/main.js", shell=True, check=True)
+        subprocess.run("cd git-real-green-folder && touch git-repo-for-commits/main.js", shell=True, check=True)
     except:
         print("Linux command didn't work, trying windows command...")
-        subprocess.run("cd git-repo-for-commits && type nul > main.js", shell=True, check=True)
+        subprocess.run("cd git-real-green-folder && cd git-repo-for-commits && type nul > main.js", shell=True, check=True)
 
     # subprocess.run("ls", shell=True, check=True)
-    subprocess.run("cd git-repo-for-commits && git init", shell=True, check=True)
-    subprocess.run(f"cd git-repo-for-commits && git remote add origin {repo_link}", shell=True, check=True)
-    subprocess.run("cd git-repo-for-commits && git branch -M main", shell=True, check=True)
+    subprocess.run("cd git-real-green-folder && cd git-repo-for-commits && git init", shell=True, check=True)
+    subprocess.run(f"cd git-real-green-folder && cd git-repo-for-commits && git remote add origin {repo_link}", shell=True, check=True)
+    subprocess.run("cd git-real-green-folder && cd git-repo-for-commits && git branch -M main", shell=True, check=True)
 
 
     startup()
@@ -214,8 +216,8 @@ def startup():
         if commit_click_or_nah_roll == True:
             print("Rolling for number of commits today...")
             commits_for_today = roll_commits(int(min_commits_per_day), int(max_commits_per_day))
-
-            print(f"Rolled {commits_for_today} commits today...")
+            print("\n**** IMAGINE DICE ROLL SOUNDS HERE ****")
+            print(f"Rolled {commits_for_today} commits today...\n")
 
             
 
@@ -287,16 +289,16 @@ def commit_click_or_nah(commit_chance_percentage):
 def commit_for_me(repo_link, commits_for_today):
     for commit in range(commits_for_today):
         # EDIT COMMIT FILE
-        commit_js_file = open('git-repo-for-commits/main.js', "a")
+        commit_js_file = open(commit_js_file_path, "a")
         commit_js_file.write(f"x\n")
         commit_js_file.close()
 
-        subprocess.run("cd git-repo-for-commits && git status", shell=True, check=True)
-        subprocess.run("cd git-repo-for-commits && git add -A", shell=True, check=True)
-        subprocess.run("cd git-repo-for-commits && git status", shell=True, check=True)
-        subprocess.run(f'cd git-repo-for-commits && git commit -m "Commit {commit + 1} for today"', shell=True, check=True)
-        subprocess.run("cd git-repo-for-commits && git status", shell=True, check=True)
-        subprocess.run("cd git-repo-for-commits && git push -u origin main", shell=True, check=True)
+        subprocess.run("cd git-real-green-folder && cd git-repo-for-commits && git status", shell=True, check=True)
+        subprocess.run("cd git-real-green-folder && cd git-repo-for-commits && git add -A", shell=True, check=True)
+        subprocess.run("cd git-real-green-folder && cd git-repo-for-commits && git status", shell=True, check=True)
+        subprocess.run(f'cd git-real-green-folder && cd git-repo-for-commits && git commit -m "Commit {commit + 1} for today"', shell=True, check=True)
+        subprocess.run("cd git-real-green-folder && cd git-repo-for-commits && git status", shell=True, check=True)
+        subprocess.run("cd git-real-green-folder && cd git-repo-for-commits && git push -u origin main", shell=True, check=True)
 
         print(f"Commit {commit + 1} pushed, waiting {commit_cooldown} seconds...")
         time.sleep(commit_cooldown)
