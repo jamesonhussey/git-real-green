@@ -10,20 +10,28 @@ import random
     # (DONE) It's currently broken, have to redo the reading of the settings file due to rearrangement and moving of git repo link to separate file
     # (DONE) Figure out why it isn't checking save file date before committing and fix that
 
-    # Make this into .exe file (?)
-    # Make readme - note it may only work with whatever OS .exe file was made in, note must have python installed, note deleting private repo wil get rid of commits done through it.
+    # Make readme - note it may only work with whatever OS .exe file was made in, note must have python installed, IMPORTANT - note deleting private repo wil get rid of commits done through it.
     # Figure out how to put this in startup folder of windows so it runs whenever computer is on
         # Issues with relative paths (especially since folders and files would be created in the startup folder). Would I need to use absolute paths & then have specific install directions / an installer to make sure everything is squared away if I were to send this to someone else to use?
+
+        # .bat file -> folder absolute path & run main.py
+            # https://stackoverflow.com/questions/30011267/create-an-empty-file-on-the-commandline-in-windows-like-the-linux-touch-command
+
+
+        # Try Except block for trying to use OS - specific commands
+            # https://stackoverflow.com/questions/24849998/how-to-catch-exception-output-from-python-subprocess-check-output
+
     # Make it work with double digit commit max/min
     # Add time of check when check ins are made
+    # Can convert program to make all files via Python instead of having to mess with try-except block for command line /:
     
 
 
 # FILE PATHS
 settings_file_path = "./settings_file.txt"
 save_file_path = "./save_file.txt"
-git_repo_link_file_path = "./git_repo_link_file"
-excluded_days_file_path = "./excluded_days_file"
+git_repo_link_file_path = "./git_repo_link_file.txt"
+excluded_days_file_path = "./excluded_days_file.txt"
 
 
 now = datetime.now() # Current date and time
@@ -87,16 +95,20 @@ def first_time_startup():
 
     settings_file.write(f"commit_chance = {commit_chance}\n")
 
+    settings_file.close()
+
+    
+
+    excluded_days_file = open(excluded_days_file_path, "a+")
 
     print('\n\n\t\tMonday - 0\n\t\tTuesday - 1\n\t\tWednesday - 2\n\t\tThursday - 3\n\t\tFriday - 4\n\t\tSaturday - 5\n\t\tSunday - 6')
 
     excluded_days = input("\n\n\tEnter corresponding numbers for any days you would like to never make commits on(Example - '4 5 6' - would exclude Friday through Sunday):\n")
 
-    settings_file.write(f"excluded_days = {excluded_days}")
+    excluded_days_file.write(f"{excluded_days}")
 
-    settings_file.close()
-
-
+    excluded_days_file.close()
+    
 
 
     repo_link_file = open(git_repo_link_file_path, "a+")
@@ -112,9 +124,20 @@ def first_time_startup():
 
     # CODE FOR MAKING PROJECT DIRECTORY AND FILES GO HERE
 
+    print("\n...\n...\n...\n")
+
+    print("Making folder for Git repo...")
     subprocess.run("mkdir git-repo-for-commits", shell=True, check=True)
-    subprocess.run("touch git-repo-for-commits/main.js", shell=True, check=True)
-    subprocess.run("ls", shell=True, check=True)
+    
+    print("Trying Linux/MacOS command to make file in repo folder...")
+
+    try:
+        subprocess.run("touch git-repo-for-commits/main.js", shell=True, check=True)
+    except:
+        print("Linux command didn't work, trying windows command...")
+        subprocess.run("cd git-repo-for-commits && type nul > main.js", shell=True, check=True)
+
+    # subprocess.run("ls", shell=True, check=True)
     subprocess.run("cd git-repo-for-commits && git init", shell=True, check=True)
     subprocess.run(f"cd git-repo-for-commits && git remote add origin {repo_link}", shell=True, check=True)
     subprocess.run("cd git-repo-for-commits && git branch -M main", shell=True, check=True)
@@ -138,15 +161,23 @@ def startup():
 
     settings_file.seek(64, 0)
     commit_chance = settings_file.readline().strip()
+    settings_file.seek(66, 0)
+    commit_chance_windows = settings_file.readline().strip()
     print(f"Commit chance setting: {commit_chance}%")
-
-    settings_file.seek(82, 0)
-    excluded_days = settings_file.readline().strip()
-    print(f"Excluded days setting: {excluded_days}")
+    print(f"Commit chance for windows setting: {commit_chance_windows}%")
 
     settings_file.close()
 
 
+    excluded_days_file = open(excluded_days_file_path, "r")
+
+    excluded_days_file.seek(0, 0)
+    excluded_days = excluded_days_file.readline().strip()
+    print(f"Excluded days setting: {excluded_days}")
+
+    excluded_days_file.close()
+
+    
     git_repo_link_file = open(git_repo_link_file_path, "r")
 
     git_repo_link_file.seek(0, 0)
@@ -154,6 +185,7 @@ def startup():
     print(f"Repository link setting: {repo_link}")
 
     git_repo_link_file.close()
+
 
 
     check_in_result = check_in()
@@ -172,7 +204,12 @@ def startup():
 
         check_exclude_days(excluded_days)
 
-        commit_click_or_nah_roll = commit_click_or_nah(int(commit_chance))
+        print("Trying roll with Linux commit chance...")
+        try:
+            commit_click_or_nah_roll = commit_click_or_nah(int(commit_chance))
+        except:
+            print("Linux commit chance failed, trying windows commit chance...")
+            commit_click_or_nah_roll = commit_click_or_nah(int(commit_chance_windows))
 
         if commit_click_or_nah_roll == True:
             print("Rolling for number of commits today...")
@@ -223,7 +260,7 @@ def check_in():
 def check_exclude_days(excluded_days):
     excluded_days_list = list(excluded_days.split(" "))
     print(f"Excluded Days (list form): {excluded_days_list}")
-    print(f"Today is {today_weekday}")
+    print(f"Today is {today_weekday}...")
 
     print("Comparing today weekday to excluded days list...")
 
