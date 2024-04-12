@@ -5,25 +5,9 @@ import time
 import random
 
 # TODO LIST
-    # (DONE) Fix error caused by github links and excluded days settings being of varying length
-    # (DONE) Fix cases where people enter settings that would otherwise throw off the file read (more digits than anticipated)
-    # (DONE) It's currently broken, have to redo the reading of the settings file due to rearrangement and moving of git repo link to separate file
-    # (DONE) Figure out why it isn't checking save file date before committing and fix that
-
-    # Make readme - note it may only work with whatever OS .exe file was made in, note must have python installed, IMPORTANT - note deleting private repo wil get rid of commits done through it.
-    # Figure out how to put this in startup folder of windows so it runs whenever computer is on
-        # Issues with relative paths (especially since folders and files would be created in the startup folder). Would I need to use absolute paths & then have specific install directions / an installer to make sure everything is squared away if I were to send this to someone else to use?
-
-        # .bat file -> folder absolute path & run main.py
-            # https://stackoverflow.com/questions/30011267/create-an-empty-file-on-the-commandline-in-windows-like-the-linux-touch-command
-
-
-        # Try Except block for trying to use OS - specific commands
-            # https://stackoverflow.com/questions/24849998/how-to-catch-exception-output-from-python-subprocess-check-output
-
     # Make it work with double digit commit max/min
     # Add time of check when check ins are made
-    # Can convert program to make all files via Python instead of having to mess with try-except block for command line /:
+    # Can convert program to make all files via Python instead of having to mess with try-except block for command line /: wish I thought of this earlier, but it's fine, I'm fine.
     
 
 
@@ -124,7 +108,7 @@ def first_time_startup():
 
     
 
-    # CODE FOR MAKING PROJECT DIRECTORY AND FILES GO HERE
+    # CODE FOR MAKING PROJECT DIRECTORY AND FILES
 
     print("\n...\n...\n...\n")
 
@@ -139,7 +123,7 @@ def first_time_startup():
         print("Linux command didn't work, trying windows command...")
         subprocess.run("cd git-real-green-folder && cd git-repo-for-commits && type nul > main.js", shell=True, check=True)
 
-    # subprocess.run("ls", shell=True, check=True)
+
     subprocess.run("cd git-real-green-folder && cd git-repo-for-commits && git init", shell=True, check=True)
     subprocess.run(f"cd git-real-green-folder && cd git-repo-for-commits && git remote add origin {repo_link}", shell=True, check=True)
     subprocess.run("cd git-real-green-folder && cd git-repo-for-commits && git branch -M main", shell=True, check=True)
@@ -225,7 +209,7 @@ def startup():
 
             commit_for_me(repo_link, commits_for_today)
 
-            # time.sleep(commit_cooldown)
+
         
         else:
             print(f"Checking in again in {(interval / 60) / 60} hours...")
