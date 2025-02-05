@@ -1,5 +1,5 @@
 # Git-Real-Green Overview
-The goal of Git-Real-Green is to fill up all your GitHub profile's little green squares with different shades of green in order to appeal to recruiters and make them think you are much more of a consistent worker than you actually are. 
+The goal of Git-Real-Green is to fill up all your GitHub profile's little green squares with different shades of green in order to appeal to recruiters. 
 
 The goal:
 <br><br>
